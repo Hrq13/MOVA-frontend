@@ -28,9 +28,9 @@
                 @keyup.enter="fetchData"
                 @input="isValid = true"
                 @filter="filterFn"
-                :label="filterType ? `Filtrar por ${(this.filterType).toLowerCase()}` : 'Sem filtro selecionado'"
-                :style="($q.platform.is.mobile ? 'margin-top: 20px; width: 100%' : 'max-width: 250px; margin-left: 5%; margin-bottom: -20px') "
-              :error="!isValid"
+                :label="`Escolha ${filterTypeWithGender}`"
+                :style="($q.platform.is.mobile ? 'margin-top: 20px; width: 100%;' : `max-width: 250px; margin-left: 5%; margin-bottom: -20px;`) + (filterType ? '' : 'transform: scale(0)')"
+                :error="!isValid"
               >
               <template v-slot:no-option>
                 <q-item>
@@ -123,11 +123,6 @@ export default {
         this.isValid = false
       })
     },
-    selectCountry (country) {
-      console.log('PAIS SELECIONADO: ' + country.name)
-      this.setCountry(country)
-      this.$router.push('/country')
-    },
     filterFn (val, update, abort) {
       if (val.length < 2) {
         abort()
@@ -160,6 +155,11 @@ export default {
           return 'name'
       }
       return ''
+    },
+    filterTypeWithGender () {
+      if (this.filterType === 'Região' || this.filterType === 'Língua' || this.filterType === 'Capital') {
+        return `uma ${this.filterType.toLowerCase()}`
+      } else return `um ${this.filterType.toLowerCase()}`
     }
   },
   mounted () {

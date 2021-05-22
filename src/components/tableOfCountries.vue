@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     selectCountry (country) {
-      this.$store.commit('data/setCountry', country)
+      this.$store.dispatch('data/setCountry', country)
       if (this.$route.path !== '/country') this.$router.push('/country')
     }
   },

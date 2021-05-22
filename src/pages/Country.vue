@@ -6,10 +6,10 @@
         <div class="q-mt-xl col" style="margin: 10% auto auto; width: 70%; justify-content: center;">
           <span class="col" style="margin: 0 auto; justify-content: center; align-items: center">
 
-            <div class="row justify-center align-center">
+            <div class="row align-center" style="max-width: 625px; margin: 0 auto">
                 <span class="row">
-                  <q-img class="row" :ratio="16/9" style="width: 280px;" :src="selectedCountry.flag"/>
-                  <div class="row q-ml-lg" style="font-size: 13pt">
+                  <q-img class="row" :ratio="13/9" style="width: 280px" :src="selectedCountry.flag"/>
+                  <div class="row q-ml-lg" :style="$q.platform.is.mobile ? 'font-size: 16pt; margin-top: 15px' : 'font-size: 17pt'">
                     Nome: {{ selectedCountry.name }}
                     <br>
                     Capital: {{ selectedCountry.capital }}
@@ -90,23 +90,6 @@ export default {
     }
   },
   methods: {
-    fetchData (filter) {
-      this.$axios
-      .get(`https://restcountries.eu/rest/v2/${this.filterTypeForUrl ? this.filterTypeForUrl + '/' : '' }${this.filterString}`)
-      .then(response => {
-        this.countries = response.data
-        this.pagesNumber = Math.ceil(response.data.length / this.pagination.rowsPerPage)
-        this.pagination.page = 1
-      })
-      .catch(e => {
-        this.isValid = false
-      })
-    },
-    selectCountry (country) {
-      console.log('PAIS SELECIONADO: ' + country.name)
-      this.setCountry(country)
-      this.$router.push('/country')
-    },
     filterFn (val, update, abort) {
       if (val.length < 2) {
         abort()
@@ -117,11 +100,31 @@ export default {
         const needle = val.toLowerCase()
         this.autoCompleteFiltered = autoCompleteOptions.data.filter(v => v.toLowerCase().indexOf(needle) > -1)
       })
+    },
+    setBorderCountries () {
+
+      const borderData = []
+
+      this.selectedCountry.borders.forEach(border => {
+        this.$axios
+        .get(`https://restcountries.eu/rest/v2/alpha/${border.toLowerCase()}`)
+        .then(response => {
+          borderData.push(response.data)
+        })
+        .catch(e => {
+          console.error(e.message);
+        })
+      })
+
+      this.countries = borderData
     }
   },
   watch: {
     filterType () {
       this.filterString = ''
+    },
+    selectedCountry () {
+      this.setBorderCountries()
     }
   },
   computed: {
@@ -151,7 +154,7 @@ export default {
     }
   },
   mounted () {
-    this.fetchData('')
+    this.setBorderCountries()
   }
 }
 </script>

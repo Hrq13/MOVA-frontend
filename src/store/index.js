@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import axios from 'axios';
 
 // import example from './module-example'
 
@@ -16,21 +17,25 @@ const data = {
   },
   getters: {
     selectedCountry: state => state.selectedCountry,
-    countryLanguages: state => state.countryLanguages,
+    countryLanguages: state => state.countryLanguages
   },
-  mutations: {
-    setCountry: (state, country) => {
-      state.selectedCountry = country
-
+  actions: {
+    setCountry ({ dispatch, commit }, country) {
       let languages = ''
 
       country.languages.forEach((lang, index) => {
         languages += lang.name + (country.languages.length - 1 > index ? ', ' : '')
       })
 
-      state.countryLanguages = languages
-    }
+      commit('setCountryData', { country, languages })
+    },
   },
+  mutations : {
+    setCountryData: (state, data) => {
+      state.selectedCountry = data.country
+      state.countryLanguages = data.languages
+    }
+  }
 }
 
 /*
