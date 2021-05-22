@@ -8,7 +8,9 @@
 
             <div class="row align-center" style="max-width: 625px; margin: 0 auto">
                 <span class="row">
-                  <q-img class="row" :ratio="22/13" style="width: 280px" :src="selectedCountry.flag"/>
+                  <span class="row justify-center">
+                    <q-img :ratio="22/13" style="width: 260px" :src="selectedCountry.flag"/>
+                  </span>
                   <div class="row q-ml-lg" :style="$q.platform.is.mobile ? 'font-size: 16pt; margin-top: 15px' : 'width: 300px; font-size: 13pt'">
                     Nome: {{ selectedCountry.name }}
                     <br>
@@ -37,7 +39,7 @@
                   :pagesNumber="pagesNumber"
                   :countries="countries"
                 />
-                <div class="row justify-center q-mt-lg">
+                <div class="row justify-center q-mt-lg q-mb-xg">
                   <q-pagination
                     v-model="pagination.page"
                     v-if="countries.length > 12"

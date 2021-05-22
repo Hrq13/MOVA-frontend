@@ -14,7 +14,7 @@
       >
         <template v-slot:item="props">
           <div class="justify-center">
-            <q-card flat :class="$q.platform.is.mobile ? 'q-ma-lg' : 'q-mr-md q-mt-md q-ml-md'">
+            <q-card flat :class="$q.platform.is.mobile ? 'q-ma-lg' : 'q-ma-md'">
               <q-img class="cursor-pointer" :ratio="16/9" @click="selectCountry(props.row)" :width="$q.platform.is.mobile ? '260px':'180px'" :src="props.row.flag"/>
             </q-card>
           </div>

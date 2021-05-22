@@ -3,22 +3,24 @@
       <q-intersection
         transition="scale"
       >
-        <div class="q-mt-xl col" style="margin: 10% auto auto; width: 70%; justify-content: center;">
-          <span :class="($q.platform.is.mobile ? 'col':'row')" style="margin: 0 auto; justify-content: center; align-items: center">
+        <div class="col" style="margin: 10% auto auto; width: 70%; justify-content: center;">
+          <div :class="($q.platform.is.mobile ? 'col':'row')" style="margin: 0 auto; justify-content: center; align-items: center">
+
+            <div :class="($q.platform.is.mobile ? 'col':'row')" :style="($q.platform.is.mobile ? 'max-width: 260px; margin: 0 auto' : 'width: 615px')">
               <q-select
-              class="row"
+              :class="($q.platform.is.mobile ? 'row':'col')"
               outlined
               dense
               v-model="filterType"
               :options="options"
-              :style="($q.platform.is.mobile ? 'width: 100%' : 'max-width: 250px; width: 180px; margin-left: 3%')"
+              :style="($q.platform.is.mobile ? 'width: 100%' : 'max-width: 250px; width: 180px')"
               label="Selecione um filtro"
               />
 
               <q-select
                 dense
                 outlined
-                class="row"
+                :class="($q.platform.is.mobile ? 'row':'col')"
                 v-model="filterString"
                 use-input
                 hide-selected
@@ -39,36 +41,38 @@
                   </q-item-section>
                 </q-item>
               </template>
-              <template v-slot:error>
-                Nada encontrado.
-              </template>
-            </q-select>
+                <template v-slot:error>
+                  Nada encontrado.
+                </template>
+              </q-select>
 
-            <span :class="$q.platform.is.mobile ? 'row' : ''" :style="$q.platform.is.mobile ? 'margin-left: 20% width: 100%' : 'margin-left: 5%; min-width: 200px'">
-              <q-btn color="purple" :style="$q.platform.is.mobile ? 'margin-left: auto; margin-top: 10px' : 'width: 100%; max-width: 150px '" @click="fetchData" label="Pesquisar"/>
-            </span>
+              <span :class="$q.platform.is.mobile ? 'row' : 'row'" :style="$q.platform.is.mobile ? 'margin-left: auto;' : 'margin-left: 5%; margin-right: 12px'">
+                <q-btn color="purple" :style="$q.platform.is.mobile ? 'margin-left: auto; margin-top: 10px' : 'width: 100%; max-width: 150px '" @click="fetchData" label="Pesquisar"/>
+              </span>
+            </div>
 
-            <div class="">
-            <table-of-countries
-            class="row"
-              :columns="columns"
-              :pagination="pagination"
-              :pagesNumber="pagesNumber"
-              :countries="countries"
-            />
-            <div class="row justify-center q-mt-lg">
-              <q-pagination
-                v-model="pagination.page"
-                v-if="countries.length > 12"
-                color="purple"
-                :max="pagesNumber"
-                size="md"
-                :max-pages="6"
+
+            <div>
+              <table-of-countries
+                class="row q-mx-auto"
+                :columns="columns"
+                :pagination="pagination"
+                :pagesNumber="pagesNumber"
+                :countries="countries"
               />
-            </div>
+              <div class="row justify-center q-mt-lg q-mb-xl q-mr-md">
+                <q-pagination
+                  v-model="pagination.page"
+                  v-if="countries.length > 12"
+                  color="purple"
+                  :max="pagesNumber"
+                  size="md"
+                  :max-pages="6"
+                />
+              </div>
             </div>
 
-          </span>
+          </div>
         </div>
 
       </q-intersection>
