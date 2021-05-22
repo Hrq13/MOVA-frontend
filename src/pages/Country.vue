@@ -9,7 +9,7 @@
             <div class="row align-center" style="max-width: 625px; margin: 0 auto">
                 <span class="row">
                   <q-img class="row" :ratio="22/13" style="width: 280px" :src="selectedCountry.flag"/>
-                  <div class="row q-ml-lg" :style="$q.platform.is.mobile ? 'font-size: 16pt; margin-top: 15px' : 'font-size: 15pt'">
+                  <div class="row q-ml-lg" :style="$q.platform.is.mobile ? 'font-size: 16pt; margin-top: 15px' : 'width: 300px; font-size: 13pt'">
                     Nome: {{ selectedCountry.name }}
                     <br>
                     Capital: {{ selectedCountry.capital }}
