@@ -1,8 +1,8 @@
 {
-  "name": "perit",
+  "name": "my-moca-test",
   "version": "0.0.1",
-  "description": "A Quasar Framework app",
-  "productName": "Perit",
+  "description": "A MOCA test",
+  "productName": "MOCA test",
   "author": "Henrique F. Miranda <h.miranda20@outlook.com>",
   "private": true,
   "scripts": {

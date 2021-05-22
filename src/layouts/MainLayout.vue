@@ -13,7 +13,8 @@
 
           <q-toolbar class="col">
             <span style="margin-left: auto">
-              <q-btn outline color="purple" class="q-mr-lg" @click="goHome" icon="keyboard_return" label="Voltar" />
+              <q-btn v-if="!$q.platform.is.mobile" outline color="purple" class="q-mr-lg" @click="goHome" icon="keyboard_return" label="Voltar" />
+              <q-btn v-else flat color="purple" class="q-mr-lg" @click="goHome" icon="keyboard_return" />
             </span>
           </q-toolbar>
       </span>

@@ -7,15 +7,15 @@
         v-if="countries.length > 0"
         :data="countries"
         :columns="columns"
-        :pagination.sync="pagination"
+        :pagination.sync="newPagination"
         row-key="name"
         hide-pagination
         hide-header
       >
         <template v-slot:item="props">
           <div class="justify-center">
-            <q-card flat class="q-mr-md q-mt-md q-ml-md">
-              <q-img class="cursor-pointer" @click="selectCountry(props.row)" height="80px" width="125px" :src="props.row.flag"/>
+            <q-card flat :class="$q.platform.is.mobile ? 'q-ma-lg' : 'q-mr-md q-mt-md q-ml-md'">
+              <q-img class="cursor-pointer" :ratio="16/9" @click="selectCountry(props.row)" :width="$q.platform.is.mobile ? '260px':'125px'" :src="props.row.flag"/>
             </q-card>
           </div>
         </template>
@@ -43,6 +43,32 @@ export default {
     pagesNumber: {
       type: Number,
       required: true
+    }
+  },
+  data () {
+    return {
+      newPagination: this.pagination
+    }
+  },
+  methods: {
+    selectCountry (country) {
+      this.$store.commit('data/setCountry', country)
+      if (this.$route.path !== '/country') this.$router.push('/country')
+    }
+  },
+  computed: {
+    getPagination: {
+      get () {
+        return this.newPagination
+      },
+      set(v) {
+        this.newPagination = v
+      }
+    }
+  },
+  watch: {
+    newPagination () {
+      this.newPagination = this.pagination
     }
   }
 }

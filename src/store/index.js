@@ -9,14 +9,27 @@ const data = {
   namespaced: true,
   state () {
     return {
-      selectedCountry: {}
+      selectedCountry: {},
+      countryLanguages: '',
+      pagination: {}
     }
   },
   getters: {
-    selectedCountry: state => state.selectedCountry
+    selectedCountry: state => state.selectedCountry,
+    countryLanguages: state => state.countryLanguages,
   },
   mutations: {
-    setCountry: (state, country) => { state.selectedCountry = country }
+    setCountry: (state, country) => {
+      state.selectedCountry = country
+
+      let languages = ''
+
+      country.languages.forEach((lang, index) => {
+        languages += lang.name + (country.languages.length - 1 > index ? ', ' : '')
+      })
+
+      state.countryLanguages = languages
+    }
   },
 }
 
