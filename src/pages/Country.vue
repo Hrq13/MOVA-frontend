@@ -7,11 +7,11 @@
           <span class="col" style="margin: 0 auto; justify-content: center; align-items: center">
 
             <div class="row align-center" style="max-width: 625px; margin: 0 auto">
-                <span class="row">
-                  <span class="row justify-center">
+                <span class="row" :style="$q.platform.is.mobile ?  'margin: 0 auto; width: 260px':''">
+                  <div class="row justify-center">
                     <q-img :ratio="22/13" style="width: 260px" :src="selectedCountry.flag"/>
-                  </span>
-                  <div class="row q-ml-lg" :style="$q.platform.is.mobile ? 'font-size: 16pt; margin-top: 15px' : 'width: 300px; font-size: 13pt'">
+                  </div>
+                  <div class="row q-ml-lg" :style="$q.platform.is.mobile ? 'font-size: 16pt; margin-top: 15px; margin: 20px auto; width: 260px' : 'width: 300px; font-size: 13pt'">
                     Nome: {{ selectedCountry.name }}
                     <br>
                     Capital: {{ selectedCountry.capital }}
