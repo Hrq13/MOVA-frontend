@@ -13,7 +13,7 @@
 
           <q-toolbar class="col">
             <span style="margin-left: auto">
-              <q-btn outline color="purple" class="q-mr-lg" icon="keyboard_return" label="Voltar" />
+              <q-btn outline color="purple" class="q-mr-lg" @click="goHome" icon="keyboard_return" label="Voltar" />
             </span>
           </q-toolbar>
       </span>
@@ -41,6 +41,9 @@ export default {
         this.miniState = false
         e.stopPropagation()
       }
+    },
+    goHome () {
+      if (this.$route.path !== '/') this.$router.push('/')
     }
   }
 }

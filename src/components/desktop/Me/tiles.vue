@@ -3,100 +3,88 @@
       <q-intersection
         transition="scale"
       >
-        <div class="q-mt-xl" style="margin: 10% auto auto; width: 70%; justify-content: center;">
+        <div class="q-mt-xl col" style="margin: 10% auto auto; width: 70%; justify-content: center;">
           <span class="row" style="margin: 0 auto; justify-content: center; align-items: center">
               <q-select
-              class="col"
-              square
+              class="row"
               outlined
               dense
               v-model="filterType"
               :options="options"
-              style="max-width: 200px; margin-left: 3%"
+              style="width: 180px;max-width: 200px; margin-left: 3%"
               label="Selecione um filtro"
               />
 
               <q-select
-              class="col"
-              v-if="filterType === 'Região'"
-              square
-              outlined
-              dense
-              v-model="filterString"
-              :options="regionOptions"
-              style="max-width: 200px; margin-left: 5%"
-              @keyup.enter="queryCountry"
-              label="Selecione uma região"
-              />
-
-              <q-input
-              v-if="filterType !== 'Região' && filterType"
-              outlined
-              dense
-              v-model="filterString"
-              @keyup.enter="queryCountry"
-              style="max-width: 250px; margin-left: 5%"
-              :label="`Filtrar por ${(this.filterType).toLowerCase()}`"
-              />
-
-              <v-autocomplete
-                auto-select-first
-                clearable
                 dense
-                filled
-              ></v-autocomplete>
+                outlined
+                class="row"
+                v-model="filterString"
+                use-input
+                hide-selected
+                fill-input
+                input-debounce="0"
+                :options="autoCompleteFiltered"
+                @keyup.enter="fetchData"
+                @input="isValid = true"
+                @filter="filterFn"
+                :label="`Filtrar por ${(this.filterType).toLowerCase()}`"
+                style="max-width: 250px; margin-left: 5%; margin-bottom: -20px"
+              :error="!isValid"
+              >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No results
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                Nada encontrado.
+              </template>
+            </q-select>
 
             <span style="margin-left: 5%; min-width: 200px">
-              <q-btn rounded color="purple" style="width: 100%; max-width: 150px" @click="queryCountry" label="Pesquisar"/>
+              <q-btn rounded color="purple" style="width: 100%; max-width: 150px" @click="fetchData" label="Pesquisar"/>
             </span>
+
+            <div class="">
+            <table-of-countries
+            class="row"
+              :columns="columns"
+              :pagination="pagination"
+              :pagesNumber="pagesNumber"
+              :countries="countries"
+            />
+            <div class="row justify-center q-mt-lg">
+              <q-pagination
+                v-model="pagination.page"
+                v-if="countries.length > 12"
+                color="purple"
+                :max="pagesNumber"
+                size="md"
+                :max-pages="6"
+              />
+            </div>
+            </div>
 
           </span>
         </div>
-        <div class="row justify-center q-mt-md">
-          <div>
-            <q-table
-              grid
-              style="max-width: 650px"
-              v-if="countries.length > 0"
-              :data="countries"
-              :columns="columns"
-              :pagination.sync="pagination"
-              row-key="name"
-              hide-pagination
-              hide-header
-            >
-              <template v-slot:item="props">
-                <div class="justify-center">
-                <q-card flat class="q-mr-md q-mt-md q-ml-md">
-                  <q-img class="cursor-pointer" @click="selectCountry(props.row)" height="80px" width="125px" :src="props.row.flag"/>
-                </q-card>
 
-                </div>
-              </template>
-            </q-table>
-
-              <div class="row justify-center q-mt-lg">
-                <q-pagination
-                  v-model="pagination.page"
-                  v-if="countries.length > 12"
-                  color="purple"
-                  :max="pagesNumber"
-                  size="md"
-                  :max-pages="6"
-                />
-              </div>
-          </div>
-        </div>
       </q-intersection>
   </q-page>
 </template>
 
 <script>
-import { createNamespacedHelpers } from 'vuex';
-const { mapMutations } = createNamespacedHelpers('data')
+import tableOfCountries from '../tableOfCountries.vue';
+
+const autoCompleteOptions = require('src/data/autocomplete.json')
 
 export default {
   name: 'PageIndex',
+  components: {
+    tableOfCountries
+  },
   data () {
     return {
       columns: [
@@ -109,8 +97,8 @@ export default {
           sortable: true
         }
       ],
-      options: ['Região', 'Capital', 'Língua', 'Código de ligação'],
-      regionOptions: ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania'],
+      options: ['Região', 'Capital', 'Língua', 'Código de ligação', 'País'],
+      autoCompleteFiltered: autoCompleteOptions.data,
       filterType: '',
       filterString: '',
       countries: [],
@@ -118,30 +106,38 @@ export default {
         page: 1,
         rowsPerPage: 12
       },
-      pagesNumber: 4
+      pagesNumber: 4,
+      isValid: true
     }
   },
   methods: {
-    ...mapMutations(['setCountry']),
-    queryCountry (e) {
-      console.log('FILTRO: ' + this.filterType)
-      if (this.filterType === 'Região') console.log('REGIÃO: ' + this.filterString)
-      this.fetchData(this.filterString)
-    },
     fetchData (filter) {
       this.$axios
-      .get(`https://restcountries.eu/rest/v2/${this.filterTypeForUrl ? this.filterTypeForUrl + '/' : '' }${filter}`)
+      .get(`https://restcountries.eu/rest/v2/${this.filterTypeForUrl ? this.filterTypeForUrl + '/' : '' }${this.filterString}`)
       .then(response => {
-        console.log(response)
         this.countries = response.data
         this.pagesNumber = Math.ceil(response.data.length / this.pagination.rowsPerPage)
         this.pagination.page = 1
+      })
+      .catch(e => {
+        this.isValid = false
       })
     },
     selectCountry (country) {
       console.log('PAIS SELECIONADO: ' + country.name)
       this.setCountry(country)
       this.$router.push('/country')
+    },
+    filterFn (val, update, abort) {
+      if (val.length < 2) {
+        abort()
+        return
+      }
+
+      update(() => {
+        const needle = val.toLowerCase()
+        this.autoCompleteFiltered = autoCompleteOptions.data.filter(v => v.toLowerCase().indexOf(needle) > -1)
+      })
     }
   },
   watch: {
@@ -160,6 +156,8 @@ export default {
           return 'lang';
         case 'Código de ligação':
           return 'callingcode';
+        case 'País':
+          return 'name'
       }
       return ''
     }
