@@ -8,8 +8,8 @@
 
             <div class="row align-center" style="max-width: 625px; margin: 0 auto">
                 <span class="row">
-                  <q-img class="row" :ratio="13/9" style="width: 280px" :src="selectedCountry.flag"/>
-                  <div class="row q-ml-lg" :style="$q.platform.is.mobile ? 'font-size: 16pt; margin-top: 15px' : 'font-size: 17pt'">
+                  <q-img class="row" :ratio="22/13" style="width: 280px" :src="selectedCountry.flag"/>
+                  <div class="row q-ml-lg" :style="$q.platform.is.mobile ? 'font-size: 16pt; margin-top: 15px' : 'font-size: 15pt'">
                     Nome: {{ selectedCountry.name }}
                     <br>
                     Capital: {{ selectedCountry.capital }}
@@ -27,6 +27,9 @@
             </div>
 
               <div class="col">
+                <span class="row" :style="'margin-top: 35px; margin-bottom: -25px; max-width: 630px; margin-left: auto; margin-right: auto; ' + ($q.platform.is.mobile ? 'font-size: 16pt; margin-top: 15px' : 'font-size: 17pt')">
+                  {{ borderCountryTitle }}
+                </span>
                 <table-of-countries
                 class="row"
                   :columns="columns"
@@ -151,6 +154,9 @@ export default {
           return 'name'
       }
       return ''
+    },
+    borderCountryTitle () {
+      return this.countries.length > 0 ? 'Países vizinhos:' : ''
     }
   },
   mounted () {
