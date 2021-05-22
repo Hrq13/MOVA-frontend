@@ -135,7 +135,26 @@ export default {
 
       update(() => {
         const needle = val.toLowerCase()
-        this.autoCompleteFiltered = autoCompleteOptions.data.filter(v => v.toLowerCase().indexOf(needle) > -1)
+
+        switch (this.filterType) {
+        case 'Região':
+          this.autoCompleteFiltered = autoCompleteOptions.regionData.filter(v => v.toLowerCase().indexOf(needle) > -1)
+          break;
+        case 'Capital':
+          this.autoCompleteFiltered = autoCompleteOptions.capitalData.filter(v => v.toLowerCase().indexOf(needle) > -1)
+          break;
+        case 'Língua':
+          this.autoCompleteFiltered = autoCompleteOptions.langData.filter(v => v.toLowerCase().indexOf(needle) > -1)
+          break;
+        case 'Código de ligação':
+          this.autoCompleteFiltered = autoCompleteOptions.callingCodeData.filter(v => v.toLowerCase().indexOf(needle) > -1)
+          break;
+        case 'País':
+          this.autoCompleteFiltered = autoCompleteOptions.countryData.filter(v => v.toLowerCase().indexOf(needle) > -1)
+          break;
+        default:
+          return
+      }
       })
     }
   },

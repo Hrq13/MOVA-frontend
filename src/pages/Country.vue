@@ -95,17 +95,6 @@ export default {
     }
   },
   methods: {
-    filterFn (val, update, abort) {
-      if (val.length < 2) {
-        abort()
-        return
-      }
-
-      update(() => {
-        const needle = val.toLowerCase()
-        this.autoCompleteFiltered = autoCompleteOptions.data.filter(v => v.toLowerCase().indexOf(needle) > -1)
-      })
-    },
     setBorderCountries () {
 
       const borderData = []
