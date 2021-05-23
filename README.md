@@ -2,6 +2,11 @@
 
 My MOVA frontend project
 
+## First time running the app
+This will install dependencies and run the app at once.
+```bash
+bin/dev.sh
+```
 
 ## Install the dependencies
 ```bash
