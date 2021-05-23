@@ -50,28 +50,26 @@
                 <q-btn color="purple" :style="$q.platform.is.mobile ? 'margin-left: auto; margin-top: 10px' : 'width: 100%; max-width: 150px '" @click="fetchData" label="Pesquisar"/>
               </span>
             </div>
+        </div>
 
-
-            <div>
-              <table-of-countries
-                class="row q-mx-auto"
-                :columns="columns"
-                :pagination="pagination"
-                :pagesNumber="pagesNumber"
-                :countries="countries"
+          <div class="col">
+            <table-of-countries
+              class="row q-mx-auto"
+              :columns="columns"
+              :pagination="pagination"
+              :pagesNumber="pagesNumber"
+              :countries="countries"
+            />
+            <div class="row justify-center q-mt-lg q-mb-xl q-mr-md">
+              <q-pagination
+                v-model="pagination.page"
+                v-if="countries.length > 12"
+                color="purple"
+                :max="pagesNumber"
+                size="md"
+                :max-pages="6"
               />
-              <div class="row justify-center q-mt-lg q-mb-xl q-mr-md">
-                <q-pagination
-                  v-model="pagination.page"
-                  v-if="countries.length > 12"
-                  color="purple"
-                  :max="pagesNumber"
-                  size="md"
-                  :max-pages="6"
-                />
-              </div>
             </div>
-
           </div>
         </div>
 
