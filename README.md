@@ -1,8 +1,8 @@
 # MOVA frontend
 
-### This is a SPA I built using JavaScript, Vue.js, Vuex, Vue router, Quasar, HTML and CSS.
-### It consumes an API to get data from countries all around the world and filter them in a table where you can see population, full name, languages spoken in that country, border countries and more.
-### It also has mobile compatibily so you should face no problems when using it on your phone.
+This is a SPA I built using JavaScript, Vue.js, Vuex, Vue router, Quasar, HTML and CSS.
+It consumes an API to get data from countries all around the world and filter them in a table where you can click to see more information from that specific country, such as population, full name, languages, border countries and more.
+It also has mobile compatibily so you should face no problems when using it on your phone.
 
 <br>
 
