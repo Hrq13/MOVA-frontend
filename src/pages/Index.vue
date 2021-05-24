@@ -1,9 +1,9 @@
 <template>
-  <q-page>
+  <q-page v-if="!loading">
       <q-intersection
         transition="scale"
       >
-        <div class="col" style="margin: 10% auto auto; width: 70%; justify-content: center;">
+        <div @keydown.enter="fetchData" class="col" style="margin: 10% auto auto; width: 70%; justify-content: center;">
           <div :class="($q.platform.is.mobile ? 'col':'row')" style="margin: 0 auto; justify-content: center; align-items: center">
 
             <div :class="($q.platform.is.mobile ? 'col':'row')" :style="($q.platform.is.mobile ? 'max-width: 260px; margin: 0 auto' : 'width: 615px')">
@@ -27,7 +27,6 @@
                 fill-input
                 input-debounce="0"
                 :options="autoCompleteFiltered"
-                @keyup.enter="fetchData"
                 @input="isValid = true"
                 @filter="filterFn"
                 :label="`Escolha ${filterTypeWithGender}`"
@@ -78,9 +77,9 @@
 </template>
 
 <script>
+import { Loading } from 'quasar'
+import { mapGetters, mapActions } from 'vuex'
 import tableOfCountries from '../components/tableOfCountries.vue';
-
-const autoCompleteOptions = require('src/data/autocomplete.json')
 
 export default {
   name: 'PageIndex',
@@ -99,20 +98,23 @@ export default {
           sortable: true
         }
       ],
+      countries: [],
+      data: {},
       options: ['Região', 'Capital', 'Língua', 'Código de ligação', 'País'],
-      autoCompleteFiltered: autoCompleteOptions.data,
+      autoCompleteFiltered: [],
       filterType: '',
       filterString: '',
-      countries: [],
       pagination: {
         page: 1,
         rowsPerPage: 12
       },
       pagesNumber: 4,
-      isValid: true
+      isValid: true,
+      loading: true
     }
   },
   methods: {
+    ...mapActions('data', ['setAutocompleteData']),
     fetchData (filter) {
       this.$axios
       .get(`https://restcountries.eu/rest/v2/${this.filterTypeForUrl ? this.filterTypeForUrl + '/' : '' }${this.filterString}`)
@@ -132,36 +134,53 @@ export default {
       }
 
       update(() => {
+
         const needle = val.toLowerCase()
 
         switch (this.filterType) {
-        case 'Região':
-          this.autoCompleteFiltered = autoCompleteOptions.regionData.filter(v => v.toLowerCase().indexOf(needle) > -1)
-          break;
-        case 'Capital':
-          this.autoCompleteFiltered = autoCompleteOptions.capitalData.filter(v => v.toLowerCase().indexOf(needle) > -1)
-          break;
-        case 'Língua':
-          this.autoCompleteFiltered = autoCompleteOptions.langData.filter(v => v.toLowerCase().indexOf(needle) > -1)
-          break;
-        case 'Código de ligação':
-          this.autoCompleteFiltered = autoCompleteOptions.callingCodeData.filter(v => v.toLowerCase().indexOf(needle) > -1)
-          break;
-        case 'País':
-          this.autoCompleteFiltered = autoCompleteOptions.countryData.filter(v => v.toLowerCase().indexOf(needle) > -1)
-          break;
-        default:
-          return
-      }
+          case 'Região':
+            this.autoCompleteFiltered = this.data.regions.filter(v => v.toLowerCase().indexOf(needle) > -1)
+            break;
+          case 'Capital':
+            this.autoCompleteFiltered = this.data.capitals.filter(v => v.toLowerCase().indexOf(needle) > -1)
+            break;
+          case 'Língua':
+            this.autoCompleteFiltered = this.data.langs.filter(v => v.toLowerCase().indexOf(needle) > -1)
+            break;
+          case 'Código de ligação':
+            this.autoCompleteFiltered = this.data.callingCodes.filter(v => v.toLowerCase().indexOf(needle) > -1)
+            break;
+          case 'País':
+            this.autoCompleteFiltered = this.data.countries.filter(v => v.toLowerCase().indexOf(needle) > -1)
+            break;
+        }
       })
+    },
+     checkLoading () {
+      if (this.countries.length > 0) {
+        Loading.hide()
+        this.loading = false
+      } else {
+        Loading.show()
+        this.loading = true
+      }
     }
   },
   watch: {
     filterType () {
       this.filterString = ''
+    },
+    ACData () {
+      this.data = { ...this.ACData }
+      this.countries = this.data.unfiltered
+      this.pagesNumber = Math.ceil(this.countries.length / this.pagination.rowsPerPage)
+      this.checkLoading()
     }
   },
   computed: {
+    ...mapGetters('data', {
+      ACData: 'autocompleteData'
+    }),
     filterTypeForUrl () {
       switch (this.filterType) {
         case 'Região':
@@ -173,18 +192,21 @@ export default {
         case 'Código de ligação':
           return 'callingcode';
         case 'País':
-          return 'name'
+          return 'name';
+        default:
+          return '';
       }
-      return ''
     },
     filterTypeWithGender () {
-      if (this.filterType === 'Região' || this.filterType === 'Língua' || this.filterType === 'Capital') {
-        return `uma ${this.filterType.toLowerCase()}`
-      } else return `um ${this.filterType.toLowerCase()}`
+      if (this.filterType === 'País' || this.filterType === 'Código de ligação') {
+        return `um ${this.filterType.toLowerCase()}`
+      }
+      return `uma ${this.filterType.toLowerCase()}`
     }
   },
   mounted () {
-    this.fetchData('')
+    this.checkLoading()
+    this.setAutocompleteData()
   }
 }
 </script>

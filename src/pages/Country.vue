@@ -61,8 +61,6 @@
 <script>
 import tableOfCountries from '../components/tableOfCountries.vue';
 
-const autoCompleteOptions = require('src/data/autocomplete.json')
-
 export default {
   name: 'PageIndex',
   components: {
@@ -80,10 +78,6 @@ export default {
           sortable: true
         }
       ],
-      options: ['Região', 'Capital', 'Língua', 'Código de ligação', 'País'],
-      autoCompleteFiltered: autoCompleteOptions.data,
-      filterType: '',
-      filterString: '',
       countries: [],
       pagination: {
         page: 1,
@@ -114,9 +108,6 @@ export default {
     }
   },
   watch: {
-    filterType () {
-      this.filterString = ''
-    },
     selectedCountry () {
       this.setBorderCountries()
     }
@@ -131,27 +122,16 @@ export default {
     getPagination () {
       return this.pagination
     },
-    filterTypeForUrl () {
-      switch (this.filterType) {
-        case 'Região':
-          return 'region';
-        case 'Capital':
-          return 'capital'
-        case 'Língua':
-          return 'lang';
-        case 'Código de ligação':
-          return 'callingcode';
-        case 'País':
-          return 'name'
-      }
-      return ''
-    },
     borderCountryTitle () {
       return this.countries.length > 0 ? 'Países vizinhos:' : ''
     }
   },
   mounted () {
-    this.setBorderCountries()
+    if (!this.selectedCountry) {
+      this.$router.push('/')
+    } else {
+      this.setBorderCountries()
+    }
   }
 }
 </script>
